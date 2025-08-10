@@ -1,1 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was ist Prompting? - Grundlagen und Best Practices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #0050b3;
+            --primary-light: #4a90e2;
+            --dark: #1a1a2e;
+            --light: #f0f3f7;
+            --white: #ffffff;
+            --gray: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        /* Content */
+        .content {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .section h2 {
+            color: var(--dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section h3 {
+            color: var(--dark);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .section ul, .section ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+        }
+
+        .section li {
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, var(--light) 0%, var(--white) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box.tip {
+            border-left-color: var(--success);
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+        }
+
+        .info-box h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Examples */
+        .example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .example-label {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--white);
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta h2 {
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--white);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="./" class="logo">🤖 Prompting</a>
+            <div class="breadcrumb">
+                <a href="../">Portal</a>
+                <span>›</span>
+                <span>Prompting Grundlagen</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Was ist Prompting?</h1>
+        <p>Die Kunst der effektiven Kommunikation mit KI-Systemen für den Bildungsbereich</p>
+    </section>
+
+    <!-- Content -->
+    <main class="content">
+        <!-- Introduction -->
+        <section class="section">
+            <h2>🎯 Einführung</h2>
+            <p>
+                <strong>Prompting</strong> bezeichnet die gezielte Formulierung von Anweisungen und Fragen an KI-Systeme wie ChatGPT, Claude oder andere Large Language Models (LLMs). 
+                Ein guter Prompt ist der Schlüssel zu präzisen, hilfreichen und kreativen KI-Antworten.
+            </p>
+            <p>
+                Im Bildungskontext ermöglicht effektives Prompting Lehrpersonen, KI als vielseitiges Werkzeug für die Unterrichtsvorbereitung, 
+                Materialerstellung und individuelle Förderung einzusetzen.
+            </p>
+
+            <div class="info-box">
+                <h4>💡 Kernprinzip</h4>
+                <p>Die Qualität der KI-Antwort hängt direkt von der Qualität deines Prompts ab. Je klarer und strukturierter deine Anfrage, desto besser das Ergebnis.</p>
+            </div>
+        </section>
+
+        <!-- Basic Elements -->
+        <section class="section">
+            <h2>🔧 Grundlegende Prompt-Elemente</h2>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎭</div>
+                    <h4>Rolle</h4>
+                    <p>Definiere, als wer die KI agieren soll (z.B. "Du bist ein erfahrener Mathematiklehrer")</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h4>Aufgabe</h4>
+                    <p>Beschreibe klar, was die KI tun soll (z.B. "Erstelle 5 Übungsaufgaben")</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h4>Kontext</h4>
+                    <p>Gib relevante Hintergrundinformationen (z.B. "für eine 8. Klasse Gymnasium")</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h4>Format</h4>
+                    <p>Spezifiziere das gewünschte Ausgabeformat (z.B. "als Tabelle" oder "in Stichpunkten")</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎨</div>
+                    <h4>Stil</h4>
+                    <p>Bestimme Tonalität und Sprache (z.B. "einfach erklärt" oder "wissenschaftlich")</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">✨</div>
+                    <h4>Beispiele</h4>
+                    <p>Zeige der KI, was du erwartest (z.B. mit einem Musterbeispiel)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt Types -->
+        <section class="section">
+            <h2>📚 Prompt-Typen für den Unterricht</h2>
+            
+            <h3>1. Generative Prompts</h3>
+            <p>Für die Erstellung neuer Inhalte:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Erstelle eine Geschichte über Photosynthese für Grundschüler, die die wissenschaftlichen Konzepte in eine spannende Abenteuergeschichte einbettet. Die Hauptfigur soll ein Wassertropfen sein, der durch eine Pflanze reist.
+            </div>
+
+            <h3>2. Analytische Prompts</h3>
+            <p>Für die Analyse und Bewertung:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Analysiere diesen Schülertext auf Rechtschreibfehler, Grammatik und Argumentationsstruktur. Gib konstruktives Feedback mit konkreten Verbesserungsvorschlägen: [Text einfügen]
+            </div>
+
+            <h3>3. Transformative Prompts</h3>
+            <p>Für die Umwandlung von Inhalten:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Wandle diesen wissenschaftlichen Text über den Wasserkreislauf in eine vereinfachte Version für Schüler mit Lernschwierigkeiten um. Verwende kurze Sätze und erkläre Fachbegriffe.
+            </div>
+
+            <h3>4. Strukturierte Prompts</h3>
+            <p>Für systematische Ausgaben:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Erstelle einen Wochenplan für das Thema "Mittelalter" (Geschichte, 7. Klasse):
+                - 5 Unterrichtsstunden à 45 Minuten
+                - Pro Stunde: Lernziel, Methoden, Materialien, Hausaufgabe
+                - Berücksichtige verschiedene Lerntypen
+                - Integriere eine digitale Komponente
+            </div>
+        </section>
+
+        <!-- Best Practices -->
+        <section class="section">
+            <h2>✅ Best Practices</h2>
+            
+            <ol>
+                <li><strong>Sei spezifisch:</strong> Statt "Erkläre Mathe" besser "Erkläre die Bruchrechnung mit Pizza-Beispielen für 10-Jährige"</li>
+                <li><strong>Nutze Strukturierung:</strong> Verwende Aufzählungen, Nummerierungen und klare Absätze</li>
+                <li><strong>Iteriere schrittweise:</strong> Verfeinere deinen Prompt basierend auf den Ergebnissen</li>
+                <li><strong>Definiere Einschränkungen:</strong> Gib Wortanzahl, Schwierigkeitsgrad oder andere Limits an</li>
+                <li><strong>Verwende Beispiele:</strong> Zeige der KI mit 1-2 Beispielen, was du erwartest</li>
+                <li><strong>Prüfe und adaptiere:</strong> KI-Ausgaben sollten immer überprüft und angepasst werden</li>
+            </ol>
+
+            <div class="info-box tip">
+                <h4>💚 Tipp</h4>
+                <p>Speichere erfolgreiche Prompts als Vorlagen. So baust du dir nach und nach eine persönliche Prompt-Bibliothek auf!</p>
+            </div>
+        </section>
+
+        <!-- Common Mistakes -->
+        <section class="section">
+            <h2>⚠️ Häufige Fehler vermeiden</h2>
+            
+            <div class="info-box warning">
+                <h4>❌ Zu vage Anfragen</h4>
+                <p><strong>Schlecht:</strong> "Mach mir was für Deutsch"<br>
+                <strong>Besser:</strong> "Erstelle 10 Übungssätze zur Kommasetzung bei Relativsätzen für die 9. Klasse"</p>
+            </div>
+
+            <div class="info-box warning">
+                <h4>❌ Fehlende Zielgruppe</h4>
+                <p><strong>Schlecht:</strong> "Erkläre die Französische Revolution"<br>
+                <strong>Besser:</strong> "Erkläre die Französische Revolution in einfacher Sprache für 14-jährige Realschüler"</p>
+            </div>
+
+            <div class="info-box warning">
+                <h4>❌ Keine Qualitätskriterien</h4>
+                <p><strong>Schlecht:</strong> "Schreib einen Test"<br>
+                <strong>Besser:</strong> "Erstelle einen 45-minütigen Test mit 3 Schwierigkeitsstufen, Punkteverteilung und Lösungsschlüssel"</p>
+            </div>
+        </section>
+
+        <!-- Advanced Techniques -->
+        <section class="section">
+            <h2>🚀 Fortgeschrittene Techniken</h2>
+            
+            <h3>Chain-of-Thought Prompting</h3>
+            <p>Lass die KI ihren Denkprozess Schritt für Schritt erklären:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Löse diese Textaufgabe Schritt für Schritt und erkläre jeden Rechenschritt so, dass ein 12-Jähriger es verstehen kann: "Ein Zug fährt mit 120 km/h..."
+            </div>
+
+            <h3>Few-Shot Learning</h3>
+            <p>Gib mehrere Beispiele vor, damit die KI das Muster erkennt:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Formuliere Feedback nach diesem Muster:
+                Beispiel 1: "Gut gemacht: ... | Verbesserung: ... | Nächster Schritt: ..."
+                Beispiel 2: "Gut gemacht: ... | Verbesserung: ... | Nächster Schritt: ..."
+                Nun gib Feedback zu: [Schülerarbeit]
+            </div>
+
+            <h3>Rollenspiel-Prompts</h3>
+            <p>Lass die KI verschiedene Perspektiven einnehmen:</p>
+            <div class="example">
+                <span class="example-label">Beispiel</span>
+                Du bist Sokrates und führst ein sokratisches Gespräch mit einem Schüler über Gerechtigkeit. Stelle nur Fragen, gib keine direkten Antworten.
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <div class="cta">
+            <h2>Bereit zum Starten?</h2>
+            <p>Entdecke unsere umfangreiche Sammlung von erprobten Prompts für deinen Unterricht</p>
+            <a href="../promptingbiblio/" class="btn">Zur Prompt-Bibliothek →</a>
+        </div>
+    </main>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add fade-in animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section, .cta').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s, transform 0.5s';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
