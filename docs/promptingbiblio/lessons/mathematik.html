@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompting Bibliothek - Digitale Lernhilfen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary-blue: #0050b3;
+            --light-blue: #e6f2ff;
+            --dark-blue: #003875;
+            --gray-light: #f5f7fa;
+            --gray-medium: #6b7280;
+            --gray-dark: #374151;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-dark);
+            background-color: var(--white);
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🤖";
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            display: flex;
+            background: var(--white);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box button {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: var(--dark-blue);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 4rem 2rem;
+            background: var(--gray-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--gray-dark);
+            margin-bottom: 3rem;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .category-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        .category-card p {
+            color: var(--gray-medium);
+            line-height: 1.5;
+        }
+
+        .prompt-count {
+            display: inline-block;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Output Types Section */
+        .output-types {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .output-card {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--white) 100%);
+            border: 2px solid var(--light-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .output-card:hover {
+            border-color: var(--primary-blue);
+            transform: scale(1.05);
+        }
+
+        .output-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .output-card h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
+            background: var(--gray-light);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-blue);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .feature-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        .feature-item p {
+            color: var(--gray-medium);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Prompting Bibliothek</a>
+            <ul class="nav-links">
+                <li><a href="#faecher">Fächer</a></li>
+                <li><a href="#output">Output-Typen</a></li>
+                <li><a href="#lessons">Lektionen</a></li>
+                <li><a href="#ressourcen">Ressourcen</a></li>
+                <li><a href="#community">Community</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Prompting für den digitalen Unterricht</h1>
+            <p>Entdecke maßgeschneiderte KI-Prompts für verschiedene Fächer und Ausgabeformate. 
+               Optimiere deinen Unterricht mit praxiserprobten Vorlagen.</p>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" placeholder="Suche nach Prompts, Fächern oder Formaten...">
+                    <button>Suchen</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories by Subject -->
+    <section class="categories" id="faecher">
+        <div class="container">
+            <h2 class="section-title">Prompts nach Fächern</h2>
+            <div class="category-grid">
+                <a href="promptingbiblio/mathematik.html" class="category-card">
+                    <div class="category-icon">📐</div>
+                    <h3>Mathematik</h3>
+                    <p>Prompts für Aufgabenerstellung, Erklärungen und Lösungswege</p>
+                    <span class="prompt-count">45 Prompts</span>
+                </a>
+                <a href="promptingbiblio/sprachen.html" class="category-card">
+                    <div class="category-icon">📚</div>
+                    <h3>Sprachen</h3>
+                    <p>Textanalyse, Grammatik, kreatives Schreiben und Übersetzungen</p>
+                    <span class="prompt-count">62 Prompts</span>
+                </a>
+                <a href="promptingbiblio/naturwissenschaften.html" class="category-card">
+                    <div class="category-icon">🔬</div>
+                    <h3>Naturwissenschaften</h3>
+                    <p>Experimente, Hypothesen und wissenschaftliche Methoden</p>
+                    <span class="prompt-count">38 Prompts</span>
+                </a>
+                <a href="promptingbiblio/informatik.html" class="category-card">
+                    <div class="category-icon">💻</div>
+                    <h3>Informatik</h3>
+                    <p>Programmierung, Algorithmen und digitale Konzepte</p>
+                    <span class="prompt-count">55 Prompts</span>
+                </a>
+                <a href="promptingbiblio/geschichte.html" class="category-card">
+                    <div class="category-icon">🏛️</div>
+                    <h3>Geschichte</h3>
+                    <p>Quellenanalyse, historische Ereignisse und Zeitleisten</p>
+                    <span class="prompt-count">34 Prompts</span>
+                </a>
+                <a href="promptingbiblio/kunst.html" class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3>Kunst & Musik</h3>
+                    <p>Kreative Projekte, Bildanalyse und Musiktheorie</p>
+                    <span class="prompt-count">28 Prompts</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Output Types -->
+    <section class="output-types" id="output">
+        <div class="container">
+            <h2 class="section-title">Prompts nach Output-Typ</h2>
+            <div class="output-grid">
+                <a href="media/arbeitsblatt.html" class="output-card">
+                    <div class="output-icon">📄</div>
+                    <h4>Arbeitsblätter</h4>
+                    <p>Strukturierte Aufgaben</p>
+                </a>
+                <a href="media/quiz.html" class="output-card">
+                    <div class="output-icon">❓</div>
+                    <h4>Quiz & Tests</h4>
+                    <p>Interaktive Prüfungen</p>
+                </a>
+                <a href="media/praesentation.html" class="output-card">
+                    <div class="output-icon">📊</div>
+                    <h4>Präsentationen</h4>
+                    <p>Visuelle Inhalte</p>
+                </a>
+                <a href="media/mindmap.html" class="output-card">
+                    <div class="output-icon">🗺️</div>
+                    <h4>Mindmaps</h4>
+                    <p>Konzeptkarten</p>
+                </a>
+                <a href="media/rubrik.html" class="output-card">
+                    <div class="output-icon">✅</div>
+                    <h4>Bewertungsraster</h4>
+                    <p>Rubriken & Kriterien</p>
+                </a>
+                <a href="media/feedback.html" class="output-card">
+                    <div class="output-icon">💬</div>
+                    <h4>Feedback</h4>
+                    <p>Personalisierte Rückmeldungen</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Unsere Vorteile</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Sofort einsatzbereit</h3>
+                    <p>Kopiere und nutze bewährte Prompts direkt in deinem KI-Tool</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Didaktisch optimiert</h3>
+                    <p>Von Lehrpersonen entwickelt und im Unterricht getestet</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Anpassbar</h3>
+                    <p>Alle Prompts sind flexibel an deine Bedürfnisse anpassbar</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Community</h3>
+                    <p>Tausche dich mit anderen Lehrpersonen aus und teile Erfahrungen</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Über uns</h4>
+                <ul>
+                    <li><a href="#">Mission</a></li>
+                    <li><a href="#">Team</a></li>
+                    <li><a href="#">Kontakt</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Ressourcen</h4>
+                <ul>
+                    <li><a href="lessons/einfuehrung.html">Einführung KI-Prompting</a></li>
+                    <li><a href="docs/best-practices.html">Best Practices</a></li>
+                    <li><a href="extern/tools.html">Externe Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="#">Forum</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                    <li><a href="#">Workshops</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>GitHub</h4>
+                <ul>
+                    <li><a href="#">Repository</a></li>
+                    <li><a href="#">Beitragen</a></li>
+                    <li><a href="#">Issues</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Prompting Bibliothek. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Search functionality
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-box input').value;
+            if (searchTerm) {
+                alert('Suche nach: ' + searchTerm + '\n(Diese Funktion wird noch implementiert)');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.category-card, .output-card, .feature-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s, transform 0.5s';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
