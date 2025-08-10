@@ -1,1 +1,379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompting Portal - KI für Bildung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #0050b3;
+            --primary-light: #4a90e2;
+            --dark: #1a1a2e;
+            --light: #f0f3f7;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: backgroundMove 20s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-60px, -60px); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            padding: 4rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #888;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .nav-card {
+            background: linear-gradient(135deg, var(--light) 0%, var(--white) 100%);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .nav-card:hover::before {
+            opacity: 1;
+        }
+
+        .nav-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .nav-card:hover .card-title,
+        .nav-card:hover .card-description,
+        .nav-card:hover .card-link {
+            color: var(--white);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.4s;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            transition: color 0.4s;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            transition: color 0.4s;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 500;
+            transition: color 0.4s;
+        }
+
+        .card-link::after {
+            content: '→';
+            transition: transform 0.3s;
+        }
+
+        .nav-card:hover .card-link::after {
+            transform: translateX(5px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Pulse animation for new content */
+        .badge-new {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">🤖</div>
+            <h1>Prompting Portal</h1>
+            <p class="subtitle">KI-gestütztes Lernen und Lehren</p>
+            <p class="description">
+                Entdecke die Welt des Educational Prompting. Von strukturierten Prompt-Vorlagen 
+                über praktische Lektionen bis hin zu innovativen Ausgabeformaten.
+            </p>
+        </header>
+
+        <nav class="nav-grid">
+            <a href="../promptingbiblio/index.html" class="nav-card">
+                <div class="card-icon">📚</div>
+                <h2 class="card-title">Prompting Bibliothek</h2>
+                <p class="card-description">
+                    Umfangreiche Sammlung von erprobten Prompts für verschiedene Fächer und Anwendungsfälle.
+                </p>
+                <span class="card-link">Zur Bibliothek</span>
+            </a>
+
+            <a href="../lessons/index.html" class="nav-card">
+                <div class="card-icon">🎓</div>
+                <h2 class="card-title">Lektionen <span class="badge-new">NEU</span></h2>
+                <p class="card-description">
+                    Schritt-für-Schritt Anleitungen zum effektiven Einsatz von KI im Unterricht.
+                </p>
+                <span class="card-link">Zu den Lektionen</span>
+            </a>
+
+            <a href="../media/index.html" class="nav-card">
+                <div class="card-icon">🎨</div>
+                <h2 class="card-title">Media & Output</h2>
+                <p class="card-description">
+                    Vorlagen für verschiedene Ausgabeformate: Arbeitsblätter, Quiz, Präsentationen und mehr.
+                </p>
+                <span class="card-link">Zu den Vorlagen</span>
+            </a>
+
+            <a href="../docs/index.html" class="nav-card">
+                <div class="card-icon">📖</div>
+                <h2 class="card-title">Dokumentation</h2>
+                <p class="card-description">
+                    Best Practices, Tipps und ausführliche Anleitungen für fortgeschrittene Techniken.
+                </p>
+                <span class="card-link">Zur Dokumentation</span>
+            </a>
+
+            <a href="../extern/index.html" class="nav-card">
+                <div class="card-icon">🔗</div>
+                <h2 class="card-title">Externe Ressourcen</h2>
+                <p class="card-description">
+                    Kuratierte Links zu Tools, Plattformen und weiterführenden Materialien.
+                </p>
+                <span class="card-link">Zu den Links</span>
+            </a>
+
+            <a href="https://github.com" target="_blank" class="nav-card">
+                <div class="card-icon">💡</div>
+                <h2 class="card-title">Mitmachen</h2>
+                <p class="card-description">
+                    Teile deine eigenen Prompts und werde Teil der Community.
+                </p>
+                <span class="card-link">GitHub öffnen</span>
+            </a>
+        </nav>
+
+        <footer class="footer">
+            <p>
+                Erstellt mit 💜 für Lehrende und Lernende | 
+                <a href="https://github.com" target="_blank">GitHub</a> | 
+                <a href="mailto:info@example.com">Kontakt</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Add entrance animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.nav-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Add ripple effect on click
+        document.querySelectorAll('.nav-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>
