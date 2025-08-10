@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompting Portal - KI für Bildung</title>
+    <title>Prompting Portal</title>
     <style>
         * {
             margin: 0;
@@ -11,69 +11,60 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        :root {
-            --primary: #0050b3;
-            --primary-light: #4a90e2;
-            --dark: #1a1a2e;
-            --light: #f0f3f7;
-            --white: #ffffff;
+        html, body {
+            min-height: 100vh;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 2rem;
             position: relative;
             overflow-x: hidden;
             margin: 0;
         }
 
-        /* Animated Background */
+        /* Animated background pattern */
         body::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+            position: absolute;
             width: 200%;
             height: 200%;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            animation: backgroundMove 20s linear infinite;
-            z-index: -1;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: drift 20s linear infinite;
         }
 
-        @keyframes backgroundMove {
+        @keyframes drift {
             0% { transform: translate(0, 0); }
             100% { transform: translate(-60px, -60px); }
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 30px;
-            padding: 4rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            width: 100%;
-            position: relative;
-            backdrop-filter: blur(10px);
-            margin: 4rem auto;
+            text-align: center;
             z-index: 1;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
             animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
         }
 
         @keyframes float {
@@ -82,130 +73,99 @@
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
+            color: white;
+            font-size: 3rem;
             font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .subtitle {
+            color: rgba(255, 255, 255, 0.9);
             font-size: 1.25rem;
-            color: #666;
-            margin-bottom: 0.5rem;
+            margin-bottom: 3rem;
+            font-weight: 300;
         }
 
-        .description {
-            font-size: 1rem;
-            color: #888;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto;
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .nav-card {
-            background: linear-gradient(135deg, var(--light) 0%, var(--white) 100%);
-            border: 2px solid transparent;
-            border-radius: 20px;
-            padding: 2rem;
+        .nav-link {
+            background: rgba(255, 255, 255, 0.95);
+            color: #4a5568;
             text-decoration: none;
-            color: var(--dark);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 1.5rem 2.5rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 200px;
             position: relative;
             overflow: hidden;
         }
 
-        .nav-card::before {
+        .nav-link::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, #667eea, #764ba2);
             opacity: 0;
-            transition: opacity 0.4s;
+            transition: opacity 0.3s;
             z-index: -1;
         }
 
-        .nav-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary);
-            color: var(--white);
+        .nav-link:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
-        .nav-card:hover::before {
+        .nav-link:hover::before {
             opacity: 1;
         }
 
-        .nav-card:hover .card-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .nav-card:hover .card-title,
-        .nav-card:hover .card-description,
-        .nav-card:hover .card-link {
-            color: var(--white);
-        }
-
-        .card-icon {
+        .nav-icon {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            transition: transform 0.4s;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-            transition: color 0.4s;
-        }
-
-        .card-description {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            transition: color 0.4s;
-        }
-
-        .card-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary);
-            font-weight: 500;
-            transition: color 0.4s;
-        }
-
-        .card-link::after {
-            content: '→';
             transition: transform 0.3s;
         }
 
-        .nav-card:hover .card-link::after {
-            transform: translateX(5px);
+        .nav-link:hover .nav-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
+        .nav-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .nav-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* Footer */
         .footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e0e0e0;
-            color: #888;
+            position: absolute;
+            bottom: 2rem;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
         }
 
         .footer a {
-            color: var(--primary);
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
         }
 
@@ -213,175 +173,166 @@
             text-decoration: underline;
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .container {
-                padding: 2rem;
-                margin: 2rem auto;
-            }
-
             h1 {
                 font-size: 2rem;
             }
 
             .logo {
-                font-size: 3rem;
+                font-size: 3.5rem;
             }
 
-            .nav-grid {
-                grid-template-columns: 1fr;
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-link {
+                min-width: 250px;
             }
         }
 
-        /* Pulse animation for new content */
-        .badge-new {
-            display: inline-block;
-            background: #ff6b6b;
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-            animation: pulse 2s infinite;
+        /* Particles effect */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 10s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes particle-float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="logo">🤖</div>
-            <h1>Prompting Portal</h1>
-            <p class="subtitle">KI-gestütztes Lernen und Lehren</p>
-            <p class="description">
-                Entdecke die Welt des Educational Prompting. Von strukturierten Prompt-Vorlagen 
-                über praktische Lektionen bis hin zu innovativen Ausgabeformaten.
-            </p>
-        </header>
-
-        <nav class="nav-grid">
-            <a href="../promptingbiblio/" class="nav-card">
-                <div class="card-icon">📚</div>
-                <h2 class="card-title">Prompting Bibliothek</h2>
-                <p class="card-description">
-                    Umfangreiche Sammlung von erprobten Prompts für verschiedene Fächer und Anwendungsfälle.
-                </p>
-                <span class="card-link">Zur Bibliothek</span>
+        <div class="logo">🤖</div>
+        <h1>Prompting Portal</h1>
+        <p class="subtitle">KI-gestütztes Lernen und Lehren</p>
+        
+        <nav class="nav-links">
+            <a href="prompting/" class="nav-link">
+                <span class="nav-icon">💡</span>
+                <span class="nav-title">Prompting</span>
+                <span class="nav-description">Grundlagen & Techniken</span>
             </a>
-
-            <a href="../lessons/" class="nav-card">
-                <div class="card-icon">🎓</div>
-                <h2 class="card-title">Lektionen <span class="badge-new">NEU</span></h2>
-                <p class="card-description">
-                    Schritt-für-Schritt Anleitungen zum effektiven Einsatz von KI im Unterricht.
-                </p>
-                <span class="card-link">Zu den Lektionen</span>
+            
+            <a href="promptingbiblio/" class="nav-link">
+                <span class="nav-icon">📚</span>
+                <span class="nav-title">Bibliothek</span>
+                <span class="nav-description">Vorlagen & Beispiele</span>
             </a>
-
-            <a href="../media/" class="nav-card">
-                <div class="card-icon">🎨</div>
-                <h2 class="card-title">Media & Output</h2>
-                <p class="card-description">
-                    Vorlagen für verschiedene Ausgabeformate: Arbeitsblätter, Quiz, Präsentationen und mehr.
-                </p>
-                <span class="card-link">Zu den Vorlagen</span>
-            </a>
-
-            <a href="../docs/" class="nav-card">
-                <div class="card-icon">📖</div>
-                <h2 class="card-title">Dokumentation</h2>
-                <p class="card-description">
-                    Best Practices, Tipps und ausführliche Anleitungen für fortgeschrittene Techniken.
-                </p>
-                <span class="card-link">Zur Dokumentation</span>
-            </a>
-
-            <a href="../extern/" class="nav-card">
-                <div class="card-icon">🔗</div>
-                <h2 class="card-title">Externe Ressourcen</h2>
-                <p class="card-description">
-                    Kuratierte Links zu Tools, Plattformen und weiterführenden Materialien.
-                </p>
-                <span class="card-link">Zu den Links</span>
-            </a>
-
-            <a href="https://github.com" target="_blank" class="nav-card">
-                <div class="card-icon">💡</div>
-                <h2 class="card-title">Mitmachen</h2>
-                <p class="card-description">
-                    Teile deine eigenen Prompts und werde Teil der Community.
-                </p>
-                <span class="card-link">GitHub öffnen</span>
+            
+            <a href="extern/" class="nav-link">
+                <span class="nav-icon">🔗</span>
+                <span class="nav-title">Externe Links</span>
+                <span class="nav-description">Tools & Ressourcen</span>
             </a>
         </nav>
-
-        <footer class="footer">
-            <p>
-                Erstellt mit 💜 für Lehrende und Lernende | 
-                <a href="https://github.com" target="_blank">GitHub</a> | 
-                <a href="mailto:info@example.com">Kontakt</a>
-            </p>
-        </footer>
     </div>
 
+    <footer class="footer">
+        <p>Ein Projekt für digitale Bildung | <a href="https://github.com" target="_blank">GitHub</a></p>
+    </footer>
+
     <script>
-        // Add entrance animations
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Random size between 2 and 8px
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            // Random horizontal position
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '0';
+            
+            // Random animation duration
+            particle.style.animationDuration = (Math.random() * 5 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            document.body.appendChild(particle);
+            
+            // Remove particle after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 15000);
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 3000);
+        
+        // Create initial particles
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createParticle, i * 1000);
+        }
+
+        // Add entrance animation to links
         document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.nav-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach((link, index) => {
+                link.style.opacity = '0';
+                link.style.transform = 'translateY(20px)';
                 
                 setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
+                    link.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    link.style.opacity = '1';
+                    link.style.transform = 'translateY(0)';
+                }, 800 + index * 100);
             });
         });
 
         // Add ripple effect on click
-        document.querySelectorAll('.nav-card').forEach(card => {
-            card.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
                 const ripple = document.createElement('span');
-                ripple.classList.add('ripple');
-                this.appendChild(ripple);
-
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                
                 const rect = this.getBoundingClientRect();
                 const size = Math.max(rect.width, rect.height);
                 const x = e.clientX - rect.left - size / 2;
                 const y = e.clientY - rect.top - size / 2;
-
+                
                 ripple.style.width = ripple.style.height = size + 'px';
                 ripple.style.left = x + 'px';
                 ripple.style.top = y + 'px';
-
+                
+                this.appendChild(ripple);
+                
                 setTimeout(() => ripple.remove(), 600);
             });
         });
     </script>
 
     <style>
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
+        @keyframes ripple {
             to {
                 transform: scale(4);
                 opacity: 0;
