@@ -21,6 +21,8 @@
             --white: #ffffff;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --purple-gradient-start: #667eea;
+            --purple-gradient-end: #764ba2;
         }
 
         body {
@@ -46,6 +48,36 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .portal-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--purple-gradient-start), var(--purple-gradient-end));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .portal-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .portal-link::before {
+            content: "←";
+            font-size: 1.2rem;
         }
 
         .logo {
@@ -340,6 +372,17 @@
                 display: none;
             }
 
+            .nav-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .portal-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+
             .category-grid {
                 grid-template-columns: 1fr;
             }
@@ -350,7 +393,10 @@
     <!-- Header -->
     <header>
         <nav>
-            <a href="index.html" class="logo">Prompting Bibliothek</a>
+            <div class="nav-left">
+                <a href="../index.html" class="portal-link">Zum Portal</a>
+                <a href="index.html" class="logo">Prompting Bibliothek</a>
+            </div>
             <ul class="nav-links">
                 <li><a href="#faecher">Fächer</a></li>
                 <li><a href="#output">Output-Typen</a></li>
@@ -493,8 +539,9 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Über uns</h4>
+                <h4>Navigation</h4>
                 <ul>
+                    <li><a href="../index.html">← Zurück zum Portal</a></li>
                     <li><a href="#">Mission</a></li>
                     <li><a href="#">Team</a></li>
                     <li><a href="#">Kontakt</a></li>
